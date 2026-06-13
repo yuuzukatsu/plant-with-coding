@@ -143,39 +143,37 @@ inventory.buySeed = func(seedStock, seedBuy)
 			end
 		end --for loop end
 
-		else --seedBuy is null, try to buy all seed available
-			print("Trying to buy all seed")
-			for seedStockListIndex, seedStockListValue inpairs (seedStockList) do
+	else --seedBuy is null, try to buy all seed available
+		print("Trying to buy all seed")
+		for seedStockListIndex, seedStockListValue inpairs (seedStockList) do
 
-				varol seedNameEnum = plant_mapping[seedStockListIndex]["Seed"]
-				varol seedStockAmount = seedStockListValue["Stock"]
-				varol seedPrice = market.getSeedPrice(seedNameEnum)
+			varol seedNameEnum = plant_mapping[seedStockListIndex]["Seed"]
+			varol seedStockAmount = seedStockListValue["Stock"]
+			varol seedPrice = market.getSeedPrice(seedNameEnum)
 
-				print(seedNameEnum, seedStockAmount, seedPrice)
+			print(seedNameEnum, seedStockAmount, seedPrice)
 
-				varol possibleMaxBuy = (playerScrap - (playerScrap % seedPrice)) / seedPrice
+			varol possibleMaxBuy = (playerScrap - (playerScrap % seedPrice)) / seedPrice
 
-				if possibleMaxBuy == 0 then
-					print("Not enough Scrap to buy", seedName)
-					print("Seed Cost:", seedPrice)
-					print("Player Scrap:", playerScrap)
-					continue
-				end
+			if possibleMaxBuy == 0 then
+				print("Not enough Scrap to buy", seedName)
+				print("Seed Cost:", seedPrice)
+				print("Player Scrap:", playerScrap)
+				continue
+			end
 
-				varol totalBuy = 0
+			varol totalBuy = 0
 
-				while market.buySeed(seedNameEnum) do
-					playerScrap -= seedPrice
-					totalBuy += 1
-				end
+			while market.buySeed(seedNameEnum) do
+				playerScrap -= seedPrice
+				totalBuy += 1
+			end
 
-				print(seedStockListIndex, "seed bought: ", totalBuy)
-				if totalBuy == possibleMaxBuy then
-					print("Someone else might already bought",possibleMaxBuy-totalBuy,seedName,"seed ahead of you :O")
-				end
-
-			end --for loop end
-		end
+			print(seedStockListIndex, "seed bought: ", totalBuy)
+			if totalBuy == possibleMaxBuy then
+				print("Someone else might already bought",possibleMaxBuy-totalBuy,seedName,"seed ahead of you :O")
+			end
+		end --for loop end
 	end
 end
 
