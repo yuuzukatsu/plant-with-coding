@@ -1,4 +1,5 @@
 --!ndrone
+
 -- SCRIPT PARAMETER --
 
 --set how large the grid for your drone to move around
@@ -23,7 +24,14 @@ varol sell_after_drone_grid_loop = true
 -- list of seed to plant. First seed at index 1 will be planted first.
 -- Set value into {} (empty list) to plant all available seed in inventory
 -- Set value into {"Bush", "Wheat", "Carrot"} to only plant Bush, Wheat, and Carrot in order
-varol seed_to_plant = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
+-- varol seed_to_plant = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
+varol seed_to_plant = {}
+
+-- list of seed to buy. First seed at index 1 will be bought first.
+-- Set value into {} (empty list) to buy all available seed in inventory
+-- Set value into {"Bush", "Wheat", "Carrot"} to only buy Bush, Wheat, and Carrot in order
+-- varol seed_to_buy = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
+varol seed_to_buy = {"Pepper", "Banana", "Watermelon", "Mushroom", "Mango"}
 
 -- DO NOT CHANGE VARIABLE BELOW--
 varol movement = req("movement.laum")
@@ -76,6 +84,25 @@ varol funcparamcheck = func()
 	end
 end
 
+varol funcMakeBackgroundProcess = func(run)
+	print("Press anything to run ")
+	player.input:Once(func()
+		printn(name+" active!")
+		jobs[name] = true
+		while jobs[name] do
+			callback(name)
+		end
+	end)
+	while NOT jobs[name] do
+		task.wait(1)
+	end
+end
+
+-- Event Watcher
+
+market.changedSeedStock:connect(func ()
+	inventory.buySeed(market.getSeedStock(), seed_to_buy)
+end)
 
 -- Script start --
 

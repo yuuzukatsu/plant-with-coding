@@ -145,7 +145,7 @@ farm.harvest = func(plantStat)
 	if drone.canHarvest() then 
 		return drone.harvest()
 
-	elseif plantStat["PlantPercent"] == 100 AND plant_mapping[plantName]["Type"] == "Crop" then
+	elseif drone.canCrop() AND plant_mapping[plantName]["Type"] == "Crop" then
 		return drone.crop()
 	end
 end
@@ -155,5 +155,7 @@ farm.plant = func(seedName)
 	return drone.plant(plant_mapping[seedName]["Seed"])
 
 end
+
+farm.getPlantMapping = plant_mapping
 
 return farm
