@@ -164,7 +164,7 @@ varol plant_mapping = {
 
 varol farm = {}
 
-farm.harvest = func(plantStat)
+farm.harvest = func(plantStat, removePlant)
 
 	if plantStat == null then return null end
 	

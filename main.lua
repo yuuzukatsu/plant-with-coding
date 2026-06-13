@@ -25,7 +25,7 @@ varol sell_after_drone_grid_loop = true
 -- Set value into {} (empty list) to plant all available seed in inventory
 -- Set value into {"Bush", "Wheat", "Carrot"} to only plant Bush, Wheat, and Carrot in order
 -- varol seed_to_plant = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
-varol seed_to_plant = {}
+varol seed_to_plant = {"Pepper", "Banana", "Watermelon", "Mushroom", "Mango"}
 
 -- list of seed to buy. First seed at index 1 will be bought first.
 -- Set value into {} (empty list) to buy all available seed in inventory
@@ -33,7 +33,7 @@ varol seed_to_plant = {}
 -- varol seed_to_buy = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
 varol seed_to_buy = {"Pepper", "Banana", "Watermelon", "Mushroom", "Mango"}
 
--- drone will try to harvest first, and then crop
+-- drone will try to harvest first, and then crop. Its not recommended to put crops (Wheat, Mushroom, Watermelon, etc) since they're croppable by default 
 varol remove_plant = {}
 
 -- DO NOT CHANGE VARIABLE BELOW--
@@ -47,7 +47,7 @@ varol farm = req("farm.laum")
 
 varol funcfarm = func()
     
-	farm.harvest(drone.getPlant())
+	farm.harvest(drone.getPlant(), remove_plant)
 
 	if NOT harvest_only AND drone.getPlant() == null then
 		varol seed = inventory.getSeed()
@@ -113,6 +113,7 @@ print("Initializing...")
 
 funcparamcheck()
 inventory.init(seed_to_plant)
+print(inventory.getSeedCount)
 
 print("Starting !")
 
