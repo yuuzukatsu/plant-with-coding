@@ -33,6 +33,9 @@ varol seed_to_plant = {}
 -- varol seed_to_buy = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
 varol seed_to_buy = {"Pepper", "Banana", "Watermelon", "Mushroom", "Mango"}
 
+-- drone will try to harvest first, and then crop
+varol remove_plant = {}
+
 -- DO NOT CHANGE VARIABLE BELOW--
 varol movement = req("movement.laum")
 varol inventory = req("inventory.laum")
