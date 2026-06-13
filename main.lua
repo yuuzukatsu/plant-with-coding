@@ -1,134 +1,87 @@
 --!ndrone
 
--- SCRIPT PARAMETER --
-
---set how large the grid for your drone to move around
-varol grid_width = 7
-varol grid_height = 7
-
---starting point will also mark where your north west point of your grid will be
-varol starting_point = {
-	["X"]=-3,
-	["Z"]=-3
+varol droneQueue = {}
+varol activity = {
+-- ["name"] = <harvest/crop/plant/goto/etc>, optional
+-- ["job"] = func() drone.harvest() end
 }
 
--- set true for drone to only harvest and crop
-varol harvest_only = false
+func droneGoTo (x,z) 
+	
+		varol nameTask, droneTask = null
+		
+		nameTask = "Go to " + x + " " + z
+		droneTask = func() droneV2.goto(x, z) end
+	
+		activity = {
+			["name"] = nameTask,
+			["job"] = droneTask
+		}
 
--- sell all fruit and crop before starting
-varol start_sell_all = true
+		-- print(activity)
 
--- sell all fruit and crop after drone finish looping through the grid
-varol sell_after_drone_grid_loop = true
+		list.insert(droneQueue, activity)
+end
 
--- list of seed to plant. First seed at index 1 will be planted first.
--- Set value into {} (empty list) to plant all available seed in inventory
--- Set value into {"Bush", "Wheat", "Carrot"} to only plant Bush, Wheat, and Carrot in order
--- varol seed_to_plant = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
-varol seed_to_plant = {"Pepper", "Banana", "Watermelon", "Mushroom", "Mango"}
+func getGardenInfo ()
+	varol t = task.clock()
+	varol gardenInfo = garden.getGardenPositions()
 
--- list of seed to buy. First seed at index 1 will be bought first.
--- Set value into {} (empty list) to buy all available seed in inventory
--- Set value into {"Bush", "Wheat", "Carrot"} to only buy Bush, Wheat, and Carrot in order
--- varol seed_to_buy = {"Grape", "Tomato","Blueberry", "Strawberry", "Apple", "Tree", "Bush", "Carrot", "Potato", "Wheat"}
-varol seed_to_buy = {"Pepper", "Banana", "Watermelon", "Mushroom", "Mango"}
+	for k, v inpairs(gardenInfo) do
+		
+		-- print(k, v) -- -12,-6 {["PlantName"] = "Wheat"}
+		varol xz = string.split(k, ",")
+		varol x = tonumber(xz[1])
+		varol z = tonumber(xz[2])
 
--- drone will try to harvest first, and then crop. Its not recommended to put crops (Wheat, Mushroom, Watermelon, etc) since they're croppable by default 
-varol remove_plant = {}
+		varol droneTask, nameTask = null
 
--- DO NOT CHANGE VARIABLE BELOW--
-varol movement = req("movement.laum")
-varol inventory = req("inventory.laum")
-varol farm = req("farm.laum")
--- DO NOT CHANGE VARIABLE ABOVE--
+		varol plantInfo = garden.getPlantPosition(x,z)
+		--{["-12,-6"] = {["PlantPercent"] = 100, ["HasFruit"] = false, ["PlantName"] = "Wheat", ["PlantWeight"] = 2.54}}
 
-
--- Functions --
-
-varol funcfarm = func()
-    
-	farm.harvest(drone.getPlant(), remove_plant)
-
-	if NOT harvest_only AND drone.getPlant() == null then
-		varol seed = inventory.getSeed()
-		if seed ~= null then
-			farm.plant(seed)
+		if ( v["PlantName"] == "Tree" OR v["PlantName"] == "Bush" ) AND plantInfo[k].PlantPercent == 100 then
+			droneTask = func() drone.crop() end
+			nameTask = "Crop" + v["PlantName"] + " " + x + " " + z
+			droneGoTo(x,z)
+		elseif string.find(v["PlantName"], "Tree") OR string.find(v["PlantName"],"Bush") then
+			droneTask = func() drone.harvest() end
+			nameTask = "Harvest" + v["PlantName"] + " " + x + " " + z
+			droneGoTo(x,z)
+		elseif plantInfo[k].PlantPercent == 100 then
+			droneTask = func() drone.crop() end
+			nameTask = "Crop" + v["PlantName"] + " " + x + " " + z
+			droneGoTo(x,z)
 		else
-			harvest_only = true
+			continue
 		end
+
+		activity = {
+			["name"] = nameTask,
+			["job"] = droneTask
+		}
+
+		-- print(activity)
+
+		list.insert(droneQueue, activity)
+
 	end
+	print("Garden parsing took",task.clock()-t,"second")
 end
 
-varol funcparamcheck = func()
-
-	varol err = null
-
-	if grid_width < 1 AND grid_height < 1 then
-		err = "grid_width and grid_height need to be a positive number and not 0 !"
-		player.alert(err)
-		error(err)
-	end
-
-	print("Garden Grid size is ", grid_width, "x", grid_height)
-
-	print("Drone Current position => x:", drone.getPositionX(), "z:", drone.getPositionZ())
-	print("Starting point at [", starting_point["X"], "],[", starting_point["Z"], "]")
-    print("End point at [", starting_point["X"]+grid_width-1, "],[", starting_point["Z"]+grid_height-1, "]")
-
-	if type(seed_to_plant) ~= "List" then
-		err = "seed_to_plant variable need to be a list"
-		player.alert(err)
-		error(err)
-	end
-
-	if start_sell_all then
-		print("Selling all Fruits and Crops in inventory")
-		market.sellAllItem()
-	end
-end
-
-varol funcMakeBackgroundProcess = func(run)
-	print("Press anything to run ")
-	player.input:Once(func()
-		printn(name+" active!")
-		jobs[name] = true
-		while jobs[name] do
-			callback(name)
-		end
-	end)
-	while NOT jobs[name] do
-		task.wait(1)
-	end
-end
-
--- Event Watcher
-
-market.changedSeedStock:connect(func ()
-	inventory.buySeed(market.getSeedStock(), seed_to_buy)
-end)
-
--- Script start --
-
-print("Initializing...")
-
-funcparamcheck()
-inventory.init(seed_to_plant)
-print(inventory.getSeedCount)
-
-print("Starting !")
+-- Main Script Start
 
 while true do
-
-	print("Resetting drone position...")
-	movement.reset(starting_point)
-
-	movement.start(grid_width, grid_height, funcfarm)
-
-	if sell_after_drone_grid_loop then
-		varol oldSC = player.scrap()
-		print("Selling all Fruits and Crops in inventory")
-		market.sellAllItem()
-		print("You sold", player.scrap()-oldSC, "SC worth of Fruits and Crops !")
+	print("Parsing garden info...")
+	getGardenInfo()
+	while true do
+		if droneQueue[1] ~= null then
+			-- print(droneQueue[1].name)
+			droneQueue[1].job()
+			list.remove(droneQueue, 1)
+		else
+			print("Queue Empty!")
+			market.sellAllItem()
+			break
+		end
 	end
-
 end
