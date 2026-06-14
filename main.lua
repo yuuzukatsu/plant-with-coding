@@ -10,12 +10,10 @@ varol seedToPlant = null
 func seedPlanter()
 	for plantListKey, plantListValue inpairs(plantList) do
 		if plantListValue.plant == false OR plantListValue.amount == null then continue end
+		if plantListValue.amount <= 0 then continue end
 
 		for x=-13, 13, 1 do
-			if plantListValue.amount <= 0 then break end
-
 			for z=-13, 13, 1 do
-				if plantListValue.amount <= 0 then break end
 
 				varol plantInfo = garden.getPlantPosition(x,z)
 				if list.check(plantInfo) then continue end
@@ -28,6 +26,7 @@ func seedPlanter()
 				}
 				list.insert(droneQueue, activity)
 				plantParam.updateSeedAmount(plantListKey, plantListValue.amount-1)
+				if plantListValue.amount <= 0 then break end
 			end
 		end
 	end
@@ -90,7 +89,7 @@ func droneRunner ()
 		droneQueue[1].job()
 		list.remove(droneQueue, 1)
 	else
-		print("Drone is idle. Waiting 1 second for task")
+		--drone idle do nothing and wait 1 second
 		task.wait(1)
 	end
 end
@@ -135,7 +134,7 @@ func buySeedFromMarket ()
 end
 
 varol makeBackgroundProcess = func(taskName, run)
-	print("Press anything to start task", taskName)
+	print("Press any key to start task", taskName)
 	player.input:Once(func()
 		print("Starting task", taskName)
 		while true do
@@ -153,6 +152,10 @@ end)
 
 
 -- Main Script Start
+
+if game.version ~= "0.15.3" then
+	print("Game version missmatch. Script might not work or return error")
+end
 
 market.sellAllItem()
 buySeedFromMarket()
