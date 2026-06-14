@@ -2,7 +2,7 @@ This script is for a Roblox game called Plant with Coding made by Lated Graham
 Check out the game on Roblox !
 https://www.roblox.com/games/122761763017872/Plant-with-Coding
 
-Built on `Plant with Coding` version 0.15.3
+Built on `Plant with Coding` version `0.15.3` Lauversion `5.3.1`
 
 In game module dependencies
 
@@ -26,3 +26,15 @@ By utilizing that, this script can:
 - A function named `droneRunner()` will run everytime a task is listed on `droneQueue` in order while those 3 function keep scanning all plant and tiles
 - Everytime new seed arive on market or `market.changedSeedStock:connect` is triggered, this script will automatically buy them using function `buySeedFromMarket()`
 - You can also configure on `plantParam.lua` which seed to buy, which seed to plant, which plant to crop, and which plant to harvest !
+
+What does this script do step by step ?
+1. sell all produce in inventory with `buySeedFromMarket()` 
+2. buy all seed with specified parameter from `plantParam.laum` 
+3. Find and list all seed in inventory 
+4. wait for user input. after user input any key, run `droneRunner()`, `plantHarvester()`, `plantCropper()`, and `seedPlanter()`  function in background
+5. after 30 seconds, sell all produce
+6. repeat again from step 5
+
+extra step: watch and wait for market seed change. when market update, it will run  `buySeedFromMarket()` again
+
+script without `droneV2`, `task`, `list`, and `market` module dependency. but its much more unoptimized in speed and script storage => https://github.com/yuuzukatsu/plant-with-coding/tree/v1.0
