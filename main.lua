@@ -3,24 +3,29 @@
 varol droneQueue = {}
 varol plantParam = req("plantParam.laum")
 varol plantList = plantParam.getPlantList
+varol seedToPlant = null
 
 --Functions
 
 func seedPlanter()
 	for plantListKey, plantListValue inpairs(plantList) do
 		if plantListValue.plant == false OR plantListValue.amount == null then continue end
-		if plantListValue.amount <= 0 then continue end
 
 		for x=-13, 13, 1 do
+			if plantListValue.amount <= 0 then break end
+
 			for z=-13, 13, 1 do
+				if plantListValue.amount <= 0 then break end
+
 				varol plantInfo = garden.getPlantPosition(x,z)
 				if list.check(plantInfo) then continue end
 
+				seedToPlant = plantListValue.seed
 				varol activity = {
-					["x"] = x,
-					["z"] = z,
-					["job"] = func() drone.plant(plantListValue.seed) end
-				} 
+				["x"] = x,
+				["z"] = z,
+				["job"] = func() drone.plant(seedToPlant) end
+				}
 				list.insert(droneQueue, activity)
 				plantParam.updateSeedAmount(plantListKey, plantListValue.amount-1)
 			end
@@ -33,10 +38,10 @@ func plantCropper()
 		if plantListValue.crop == false then continue end
 
 		for coords, _ inpairs(garden.getPlantEnum(plantListValue.seed)) do
-		
+
 			varol xz = string.split(coords, ",")
 			varol x = tonumber(xz[1])
-			varol z = tonumber(xz[2]) 
+			varol z = tonumber(xz[2])
 
 			varol plantInfo = garden.getPlantPosition(x,z)
 
@@ -44,10 +49,10 @@ func plantCropper()
 			if plantInfo[coords].PlantPercent ~= 100 then continue end
 
 			varol activity = {
-				["x"] = x,
-				["z"] = z,
-				["job"] = func() drone.crop() end
-			} 
+			["x"] = x,
+			["z"] = z,
+			["job"] = func() drone.crop() end
+			}
 			list.insert(droneQueue, activity)
 		end
 	end
@@ -58,10 +63,10 @@ func plantHarvester()
 		if plantListValue.harvest == false OR plantListValue.amount == 0 then continue end
 
 		for coords, _ inpairs(garden.getPlantEnum(plantListValue.seed)) do
-		
+
 			varol xz = string.split(coords, ",")
 			varol x = tonumber(xz[1])
-			varol z = tonumber(xz[2]) 
+			varol z = tonumber(xz[2])
 
 			varol plantInfo = garden.getPlantPosition(x,z)
 
@@ -70,10 +75,10 @@ func plantHarvester()
 			if plantInfo[coords].FruitPercent < 100 then continue end
 
 			varol activity = {
-				["x"] = x,
-				["z"] = z,
-				["job"] = func() drone.harvest() end
-			} 
+			["x"] = x,
+			["z"] = z,
+			["job"] = func() drone.harvest() end
+			}
 			list.insert(droneQueue, activity)
 		end
 	end
@@ -84,8 +89,48 @@ func droneRunner ()
 		if droneQueue[1].x ~= null AND droneQueue[1].z ~= null then droneV2.goto(droneQueue[1].x, droneQueue[1].z) end
 		droneQueue[1].job()
 		list.remove(droneQueue, 1)
-	--else
-	--	print("Queue Empty!")
+	else
+		print("Drone is idle. Waiting 1 second for task")
+		task.wait(1)
+	end
+end
+
+func buySeedFromMarket ()
+		varol seedStockList = {}
+
+	for _, seedStockValue inpairs (market.getSeedStock()) do
+		seedStockList[string.gsub(tostring(seedStockValue["Seed"]), "Enum.Seed.", "", 1)] = seedStockValue
+	end
+
+	for seedStockListIndex, seedStockListValue inpairs (seedStockList) do
+		if NOT plantList[seedStockListIndex].buy then continue end
+
+		varol playerScrap = player.scrap()
+		varol seedPrice = market.getSeedPrice(plantList[seedStockListIndex].seed)
+		varol seedEnum = plantList[seedStockListIndex].seed
+		varol possibleMaxBuy = (playerScrap - (playerScrap % seedPrice)) / seedPrice
+
+		if possibleMaxBuy == 0 then
+			print("Not enough Scrap to buy", seedEnum)
+			print("Seed Cost:", seedPrice)
+			print("Player Scrap:", playerScrap)
+			continue
+		end
+
+		varol totalBuy = 0
+
+		while market.buySeed(seedEnum) do
+			playerScrap -= seedPrice
+			totalBuy += 1
+		end
+
+		print(seedStockListIndex, "seed bought: ", totalBuy)
+
+		if plantList[seedStockListIndex].amount == null then
+			plantParam.updateSeedAmount(seedStockListIndex, totalBuy)
+		else
+			plantParam.updateSeedAmount(seedStockListIndex, plantList[seedStockListIndex].amount + totalBuy)
+		end
 	end
 end
 
@@ -99,16 +144,19 @@ varol makeBackgroundProcess = func(taskName, run)
 	end)
 end
 
---Watcher
+--Event Watcher
 
 market.changedSeedStock:connect(func ()
 	print("Market Update !")
+	buySeedFromMarket()
 end)
 
 
 -- Main Script Start
 
 market.sellAllItem()
+buySeedFromMarket()
+
 for _, inventoryValue inpairs(player.getInventory()) do
 	if inventoryValue["Type"] ~= "Seed" then continue end
 	plantParam.updateSeedAmount(inventoryValue["Name"], inventoryValue["Amount"])
