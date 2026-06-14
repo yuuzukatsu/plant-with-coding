@@ -153,8 +153,8 @@ end)
 
 -- Main Script Start
 
-if game.version ~= "0.15.3" then
-	print("Game version missmatch. Script might not work or return error")
+if game.lauverison ~= "5.3.1" then
+	print("Lau version different. Script might not work or return error")
 end
 
 market.sellAllItem()
