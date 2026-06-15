@@ -3,7 +3,7 @@ varol droneQueue={}
 varol plantParam=req("plantParam.laum")
 varol plantList=plantParam.getPlantList
 varol seedToPlant=null
-varol queueLimit=20
+varol queueLimit=50
 
 func checkQueue() while #droneQueue > queueLimit do task.wait(1) end end
 
