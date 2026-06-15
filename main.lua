@@ -10,13 +10,14 @@ func checkQueue() while #droneQueue > queueLimit do task.wait(1) end end
 func seedPlanter(bgTotal,bgNumber)
 	varol bgIndex= 0
 	for plantListKey, plantListValue inpairs(plantList) do
+		if NOT plantListValue.plant OR plantListValue.amount == null then continue end
 		bgIndex += 1
 		if bgIndex % bgTotal ~= bgNumber-1 then continue end
-		if NOT plantListValue.plant OR plantListValue.amount == null then continue end
 		if plantListValue.amount <= 0 then continue end
 
 		for x=-13,13,1 do 
 		for z=-13,13,1 do
+			if bgIndex % bgTotal ~= bgNumber-1 then continue end
 			varol plantInfo = garden.getPlantPosition(x,z)
 			if list.check(plantInfo) then continue end
 
@@ -37,9 +38,9 @@ end
 func plantCropper(bgTotal,bgNumber)
 	varol bgIndex= 0
 	for _, plantListValue inpairs(plantList) do
+		if NOT plantListValue.crop then continue end
 		bgIndex+= 1
 		if bgIndex % bgTotal ~= bgNumber-1 then continue end
-		if NOT plantListValue.crop then continue end
 
 		for coords, _ inpairs(garden.getPlantEnum(plantListValue.seed)) do
 			varol xz = string.split(coords, ",")
@@ -64,9 +65,9 @@ end
 func plantHarvester(bgTotal, bgNumber)
 	varol bgIndex = 0
 	for _, plantListValue inpairs(plantList) do
+		if NOT plantListValue.harvest then continue end
 		bgIndex += 1
 		if bgIndex % bgTotal ~= bgNumber-1 then continue end
-		if NOT plantListValue.harvest OR plantListValue.amount == 0 then continue end
 
 		for coords, _ inpairs(garden.getPlantEnum(plantListValue.seed)) do
 			varol xz = string.split(coords, ",")
@@ -133,7 +134,7 @@ func buySeedFromMarket ()
 	end
 end
 
-func makeBGProcess (taskName, run, bgTotal, bgNumber)
+func BGProcess (taskName, run, bgTotal, bgNumber)
 	bgTotal = bgTotal OR 1
 	bgNumber = bgNumber OR 1
 	print("Press any key to start task", taskName)
@@ -147,9 +148,7 @@ end
 
 --Event Watcher
 market.changedSeedStock:connect(func ()
-	print("Market Update !")
 	buySeedFromMarket()
-	print("Finish buying")
 end)
 
 -- Main Script Start
@@ -160,12 +159,13 @@ for _, inventoryValue inpairs(player.getInventory()) do
 	if inventoryValue["Type"]~="Seed" then continue end
 	plantParam.updateSeedAmount(inventoryValue["Name"], inventoryValue["Amount"])
 end
-makeBGProcess("Drone Runner",droneRunner)
-makeBGProcess("Plant Harvester1",plantHarvester,3,1)
-makeBGProcess("Plant Harvester2",plantHarvester,3,2)
-makeBGProcess("Plant Harvester3",plantHarvester,3,3)
-makeBGProcess("Plant Cropper",plantCropper)
-makeBGProcess("Seed Planter",seedPlanter)
+BGProcess("Drone Runner",droneRunner)
+BGProcess("Plant Harvester1",plantHarvester,2,1)
+BGProcess("Plant Harvester2",plantHarvester,2,2)
+BGProcess("Plant Cropper1",plantCropper,2,1)
+BGProcess("Plant Cropper2",plantCropper,2,2)
+BGProcess("Seed Planter1",seedPlanter,2,1)
+BGProcess("Seed Planter2",seedPlanter,2,2)
 while true do
 	task.wait(30)
 	market.sellAllItem()
