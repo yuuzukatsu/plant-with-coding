@@ -17,7 +17,7 @@ func buySeedFromMarket ()
 		varol seedEnum = plantList[seedStockListIndex].seed
 		varol possibleMaxBuy = (playerScrap - (playerScrap % seedPrice)) / seedPrice
 		if possibleMaxBuy == 0 then
-			print("Not enough Scrap to buy", seedEnum)
+			print(task.date(task.time()), "Not enough Scrap to buy", seedEnum)
 			continue
 		end
 
@@ -26,7 +26,7 @@ func buySeedFromMarket ()
 			playerScrap -= seedPrice
 			totalBuy += 1
 		end
-		print(seedStockListIndex,"seed bought: ",totalBuy)
+		print(task.date(task.time()), seedStockListIndex,"seed bought: ",totalBuy)
 
 		if plantList[seedStockListIndex].amount == null then
 			plantParam.updateSeedAmount(seedStockListIndex, totalBuy)
@@ -39,9 +39,9 @@ end
 func makeBackgroundProcess (taskName, run, bgTotal, bgNumber)
 	bgTotal = bgTotal OR 1
 	bgNumber = bgNumber OR 1
-	print("Press any key to start task", taskName)
+	print(task.date(task.time()), "Press any key to start task", taskName)
 	player.input:Once(func()
-		print("Starting task", taskName)
+		print(task.date(task.time()), "Starting task", taskName)
 		while true do
 			run(bgTotal, bgNumber)
 		end
@@ -52,7 +52,7 @@ func sellAllSeed()
 	task.wait(30)
 	varol playerSC = player.scrap()
 	market.sellAllItem()
-	print("Sold all for",player.scrap() - playerSC,"SC")
+	print(task.date(task.time()), "Sold all for",player.scrap() - playerSC,"SC")
 end
 
 --Event Watcher
