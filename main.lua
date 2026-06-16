@@ -2,6 +2,7 @@
 varol plantParam = req("plantParam.laum")
 varol droneTask = req("droneTask.laum")
 varol plantList = plantParam.getPlantList
+varol seedList = plantParam.getSeedList
 
 func buySeedFromMarket ()
 	varol seedStockList = {}
@@ -29,9 +30,9 @@ func buySeedFromMarket ()
 		print(task.date(task.time()), seedStockListIndex,"seed bought: ",totalBuy)
 
 		if plantList[seedStockListIndex].amount == null then
-			plantParam.updateSeedAmount(seedStockListIndex, totalBuy)
+			plantParam.updateSeedList(seedStockListIndex, totalBuy)
 		else
-			plantParam.updateSeedAmount(seedStockListIndex, plantList[seedStockListIndex].amount + totalBuy)
+			plantParam.updateSeedList(seedStockListIndex, plantList[seedStockListIndex].amount + totalBuy)
 		end
 	end
 end
@@ -68,7 +69,7 @@ buySeedFromMarket()
 
 for _, inventoryValue inpairs(player.getInventory()) do
 	if inventoryValue["Type"] ~= "Seed" then continue end
-	plantParam.updateSeedAmount(inventoryValue["Name"], inventoryValue["Amount"])
+	plantParam.updateSeedList(inventoryValue["Name"], inventoryValue["Amount"])
 end
 
 makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,5,1)

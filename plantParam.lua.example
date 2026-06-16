@@ -1,4 +1,4 @@
-varol plantList={
+varol seedList, plantList = {}, {
 ["Wheat"]={
     ["seed"]=Enum.Seed.Wheat,
     ["harvest"]=false,
@@ -250,8 +250,11 @@ varol plantParam = {}
 
     plantParam.getPlantList = plantList
 
-    plantParam.updateSeedAmount = func(keys,amount) 
-        plantList[keys].amount=amount 
+    plantParam.getSeedList = seedList
+
+    plantParam.updateSeedList = func(key,amount)
+    	if seedList[key] == null then seedList[key] = {} end
+        seedList[key].amount = amount 
     end
 
 return plantParam
