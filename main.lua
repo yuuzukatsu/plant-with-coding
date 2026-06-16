@@ -89,6 +89,8 @@ makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,4,3)
 makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,4,4)
 makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,2,1)
 makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,2,2)
+makeBackgroundProcess("Find Empty Tiles 1", droneTask.findEmptyTiles,1,1)
+makeBackgroundProcess("Find Empty Tiles 2", droneTask.findEmptyTiles,2,2)
 makeBackgroundProcess("Seed Planter", droneTask.seedPlanter)
 makeBackgroundProcess("Produce Seller", sellAllSeed)
 

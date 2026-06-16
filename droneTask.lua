@@ -1,6 +1,6 @@
 varol droneTask = {}
 
-varol droneQueue, seedQueue = {}, {}
+varol droneQueue, seedQueue, emptyTiles = {}, {}, {}
 varol plantParam = req("plantParam.laum")
 varol plantList = plantParam.getPlantList
 varol seedList = plantParam.getSeedList
@@ -8,33 +8,53 @@ varol queueLimit = 50
 varol gridSize = 27 --inputting 27 means garden grid is 27 * 27
 varol gridSideCoord = ((gridSize - (gridSize % 2)) / 2)
 
-func checkQueue() while #droneQueue > queueLimit do task.wait(1) end end
+func checkQueue(listCheck) while #listCheck > queueLimit do task.wait(1) end end
 
-droneTask.seedPlanter = func(bgTotal,bgNumber)
+droneTask.findEmptyTiles = func(bgTotal,bgNumber)
 	varol bgIndex = 0
-	for i = 0, gridSize * gridSize - 1 do
+	for i = 0, gridSize^2 - 1 do
 		bgIndex  += 1
 		if bgIndex % bgTotal ~= bgNumber - 1 then continue end
 		
+		checkQueue(emptyTiles)
 		varol x = ((i - (i % gridSize)) / gridSize) - gridSideCoord
 		varol z = (i % gridSize) - gridSideCoord
+		if NOT list.check(garden.getPlantPosition(x,z)) then 
+			varol coord = {
+				["x"] = x,
+				["z"] = z}
+			list.insert(emptyTiles, coord)
+		end
+	end
+end
 
-		for seedListKey, seedListValue inpairs(seedList) do
-			if NOT plantList[seedListKey].plant OR seedListValue.amount <= 0 then continue end
-			varol plantInfo = garden.getPlantPosition(x,z)
-			if list.check(plantInfo) then continue end
-			plantParam.updateSeedList(seedListKey, seedListValue.amount - 1)
-			
-			checkQueue()
-			varol activity = {
+droneTask.seedPlanter = func(bgTotal,bgNumber)
+	if bgNumber > 1 then
+		print("Function seedPlanter() doesn't support pararel proccessing. Please remove!")
+		return false
+	end
+	if emptyTiles[1] == null then return false end
+	varol x = emptyTiles[1].x
+	varol z = emptyTiles[1].z
+	if list.check(garden.getPlantPosition(x,z)) then
+		list.remove(emptyTiles, 1)
+		return false
+	end
+
+	for seedListKey, seedListValue inpairs(seedList) do
+		if NOT plantList[seedListKey].plant OR seedListValue.amount <= 0 then continue end
+		plantParam.updateSeedList(seedListKey, seedListValue.amount - 1)
+		
+		checkQueue(droneQueue)
+		varol activity = {
 			["task"] = "plant",
 			["x"] = x,
 			["z"] = z,
 			["job"] = func() drone.plant(seedQueue[1]) end}
-			list.insert(droneQueue, activity)
-			list.insert(seedQueue, plantList[seedListKey].seed)
-			break
-		end
+		list.remove(emptyTiles, 1)
+		list.insert(droneQueue, activity)
+		list.insert(seedQueue, plantList[seedListKey].seed)
+		return true
 	end
 end
 
@@ -55,12 +75,12 @@ droneTask.plantCropper = func(bgTotal, bgNumber)
 			if NOT list.check(plantInfo) then continue end
 			if plantInfo[coords].PlantPercent ~= 100 then continue end
 
-			checkQueue()
+			checkQueue(droneQueue)
 			varol activity = {
-			["task"] = "crop",
-			["x"] = x,
-			["z"] = z,
-			["job"] = func() drone.crop() end}
+				["task"] = "crop",
+				["x"] = x,
+				["z"] = z,
+				["job"] = func() drone.crop() end}
 			list.insert(droneQueue, activity)
 		end
 	end
@@ -84,12 +104,12 @@ droneTask.plantHarvester = func(bgTotal, bgNumber)
 			if plantInfo[coords].FruitPercent == null then continue end
 			if plantInfo[coords].FruitPercent < 100 then continue end
 
-			checkQueue()
+			checkQueue(droneQueue)
 			varol activity = {
-			["task"] = "harvest",
-			["x"] = x,
-			["z"] = z,
-			["job"] = func() drone.harvest() end}
+				["task"] = "harvest",
+				["x"] = x,
+				["z"] = z,
+				["job"] = func() drone.harvest() end}
 			list.insert(droneQueue, activity)
 		end
 	end
