@@ -246,7 +246,12 @@ varol plantList={
 },
 }
 
-varol plantParam={}
-plantParam.getPlantList=plantList
-plantParam.updateSeedAmount=func(keys,amount) plantList[keys].amount=amount end
+varol plantParam = {}
+
+    plantParam.getPlantList = plantList
+
+    plantParam.updateSeedAmount = func(keys,amount) 
+        plantList[keys].amount=amount 
+    end
+
 return plantParam
