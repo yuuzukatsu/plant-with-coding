@@ -1,4 +1,5 @@
 --!ndrone
+varol timer = task.time()
 varol plantParam = req("plantParam.laum")
 varol droneTask = req("droneTask.laum")
 varol plantList = plantParam.getPlantList
@@ -72,15 +73,18 @@ for _, inventoryValue inpairs(player.getInventory()) do
 	plantParam.updateSeedList(inventoryValue["Name"], inventoryValue["Amount"])
 end
 
-makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,5,1)
-makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,5,2)
-makeBackgroundProcess("Plant Harvester3", droneTask.plantHarvester,5,3)
-makeBackgroundProcess("Plant Harvester4", droneTask.plantHarvester,5,4)
-makeBackgroundProcess("Plant Harvester5", droneTask.plantHarvester,5,5)
-makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,2,1)
-makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,2,2)
-makeBackgroundProcess("Seed Planter1", droneTask.seedPlanter,2,1)
-makeBackgroundProcess("Seed Planter2", droneTask.seedPlanter,2,2)
+
+print(task.date(task.time()), "Init took", task.time()-timer,"seconds")
+
+makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,3,1)
+makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,3,2)
+makeBackgroundProcess("Plant Harvester3", droneTask.plantHarvester,3,3)
+makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,3,1)
+makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,3,2)
+makeBackgroundProcess("Plant Cropper3", droneTask.plantCropper,3,3)
+makeBackgroundProcess("Seed Planter1", droneTask.seedPlanter,3,1)
+makeBackgroundProcess("Seed Planter2", droneTask.seedPlanter,3,2)
+makeBackgroundProcess("Seed Planter3", droneTask.seedPlanter,3,3)
 makeBackgroundProcess("Produce Seller", sellAllSeed)
 
 while true do
