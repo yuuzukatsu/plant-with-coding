@@ -252,6 +252,12 @@ varol plantParam = {}
 
 	plantParam.getSeedList = seedList
 
+	plantParam.getSeedListAmount = func(key)
+		if seedList[key] == null then seedList[key] = {} end
+		if seedList[key].amount == null then seedList[key].amount = 0 end
+		return seedList[key].amount
+	end
+
 	plantParam.updateSeedList = func(key,amount)
 		if seedList[key] == null then seedList[key] = {} end
 		seedList[key].amount = amount

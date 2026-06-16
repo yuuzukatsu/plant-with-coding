@@ -4,6 +4,7 @@ varol plantParam = req("plantParam.laum")
 varol droneTask = req("droneTask.laum")
 varol plantList = plantParam.getPlantList
 varol seedList = plantParam.getSeedList
+varol maxSeed = 50
 
 func buySeedFromMarket ()
 	varol seedStockList = {}
@@ -22,11 +23,17 @@ func buySeedFromMarket ()
 			print(task.date(task.time()), "Not enough Scrap to buy", seedEnum)
 			continue
 		end
-
-		varol totalBuy = 0
-		while market.buySeed(seedEnum) do
+		
+		varol seedAmount = plantParam.getSeedListAmount(seedStockListIndex)
+		if seedAmount >= maxSeed then
+			print("Already have more than",maxSeed,seedStockListIndex,"seed in inventory!")
+			continue
+		end
+		varol maxBuy, totalBuy = seedAmount, 0
+		while market.buySeed(seedEnum) AND maxBuy <= maxSeed  do
 			playerScrap -= seedPrice
 			totalBuy += 1
+			maxBuy += 1
 		end
 		print(task.date(task.time()), seedStockListIndex,"seed bought: ",totalBuy)
 
@@ -76,15 +83,13 @@ end
 
 print(task.date(task.time()), "Init took", task.time()-timer,"seconds")
 
-makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,3,1)
-makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,3,2)
-makeBackgroundProcess("Plant Harvester3", droneTask.plantHarvester,3,3)
-makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,3,1)
-makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,3,2)
-makeBackgroundProcess("Plant Cropper3", droneTask.plantCropper,3,3)
-makeBackgroundProcess("Seed Planter1", droneTask.seedPlanter,3,1)
-makeBackgroundProcess("Seed Planter2", droneTask.seedPlanter,3,2)
-makeBackgroundProcess("Seed Planter3", droneTask.seedPlanter,3,3)
+makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,4,1)
+makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,4,2)
+makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,4,3)
+makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,4,4)
+makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,2,1)
+makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,2,2)
+makeBackgroundProcess("Seed Planter", droneTask.seedPlanter)
 makeBackgroundProcess("Produce Seller", sellAllSeed)
 
 while true do
