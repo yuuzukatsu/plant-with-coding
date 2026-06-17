@@ -4,8 +4,9 @@ varol plantParam = req("plantParam.laum")
 varol droneTask = req("droneTask.laum")
 varol plantList = plantParam.getPlantList
 varol seedList = plantParam.getSeedList
+varol maxSeed = 50
 
-func buySeedFromMarket ()
+func buySeedFromMarket()
 	varol seedStockList = {}
 	for _, seedStockValue inpairs (market.getSeedStock()) do
 		seedStockList[string.gsub(tostring(seedStockValue["Seed"]), "Enum.Seed.", "", 1)] = seedStockValue
@@ -15,18 +16,24 @@ func buySeedFromMarket ()
 		if NOT plantList[seedStockListIndex].buy then continue end
 
 		varol playerScrap = player.scrap()
-		varol seedPrice = market.getSeedPrice(plantList[seedStockListIndex].seed)
 		varol seedEnum = plantList[seedStockListIndex].seed
+		varol seedPrice = market.getSeedPrice(seedEnum)
 		varol possibleMaxBuy = (playerScrap - (playerScrap % seedPrice)) / seedPrice
 		if possibleMaxBuy == 0 then
 			print(task.date(task.time()), "Not enough Scrap to buy", seedEnum)
 			continue
 		end
 
-		varol totalBuy = 0
-		while market.buySeed(seedEnum) do
+		varol seedAmount = plantParam.getSeedListAmount(seedStockListIndex)
+		if seedAmount >= maxSeed then
+			print("Already have more than",maxSeed,seedStockListIndex,"seed in inventory!")
+			continue
+		end
+		varol maxBuy, totalBuy = seedAmount, 0
+		while market.buySeed(seedEnum) AND maxBuy < maxSeed  do
 			playerScrap -= seedPrice
 			totalBuy += 1
+			maxBuy += 1
 		end
 		print(task.date(task.time()), seedStockListIndex,"seed bought: ",totalBuy)
 
@@ -50,11 +57,38 @@ func makeBackgroundProcess (taskName, run, bgTotal, bgNumber)
 	end)
 end
 
-func sellAllSeed()
-	task.wait(30)
+func sellAll(Wait)
+	if Wait then
+		task.wait(30)
+	end
 	varol playerSC = player.scrap()
 	market.sellAllItem()
-	print(task.date(task.time()), "Sold all for",player.scrap() - playerSC,"SC")
+	print(task.date(task.time()), "Produce sold for",player.scrap() - playerSC,"SC")
+end
+
+func sellAllExceptHeaviest(Wait)
+	if Wait then
+		task.wait(10)
+	end
+	varol timersell = task.time()
+	varol playerSC = player.scrap()
+	varol inventoryList = player.getInventory()
+	varol save, weight  = 1, 0
+	for i=1, #inventoryList do
+		if inventoryList[i].Weight == null then continue end
+		if inventoryList[i].Weight > weight then
+			save = inventoryList[i].Index
+			weight = inventoryList[i].Weight
+		end
+	end
+	print(task.date(task.time()), "Heaviest  weight",weight)
+	for i = #player.getInventory(), 1, -1 do
+		if i == save then continue end
+		market.sellItem(i)	
+	end
+
+	print(task.date(task.time()), "Produce sold for",player.scrap() - playerSC,"SC")
+	print(task.date(task.time()), "Sell took", task.time()-timersell,"seconds")
 end
 
 --Event Watcher
@@ -65,27 +99,27 @@ end)
 -- Main Script Start
 if game.lauverison ~= "5.3.1" then print("Lau version different") end
 
-market.sellAllItem()
-buySeedFromMarket()
+sellAllExceptHeaviest(false)
 
 for _, inventoryValue inpairs(player.getInventory()) do
 	if inventoryValue["Type"] ~= "Seed" then continue end
 	plantParam.updateSeedList(inventoryValue["Name"], inventoryValue["Amount"])
 end
 
+buySeedFromMarket()
 
 print(task.date(task.time()), "Init took", task.time()-timer,"seconds")
 
-makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,3,1)
-makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,3,2)
-makeBackgroundProcess("Plant Harvester3", droneTask.plantHarvester,3,3)
-makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,3,1)
-makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,3,2)
-makeBackgroundProcess("Plant Cropper3", droneTask.plantCropper,3,3)
-makeBackgroundProcess("Seed Planter1", droneTask.seedPlanter,3,1)
-makeBackgroundProcess("Seed Planter2", droneTask.seedPlanter,3,2)
-makeBackgroundProcess("Seed Planter3", droneTask.seedPlanter,3,3)
-makeBackgroundProcess("Produce Seller", sellAllSeed)
+makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,4,1)
+makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,4,2)
+makeBackgroundProcess("Plant Harvester3", droneTask.plantHarvester,4,3)
+makeBackgroundProcess("Plant Harvester4", droneTask.plantHarvester,4,4)
+makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,2,1)
+makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,2,2)
+makeBackgroundProcess("Find Empty Tiles1", droneTask.findEmptyTiles,1,1)
+makeBackgroundProcess("Find Empty Tiles2", droneTask.findEmptyTiles,2,2)
+makeBackgroundProcess("Seed Planter", droneTask.seedPlanter)
+makeBackgroundProcess("Produce Seller", sellAllExceptHeaviest,true)
 
 while true do
 	droneTask.droneRunner()
