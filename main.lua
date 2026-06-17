@@ -16,8 +16,8 @@ func buySeedFromMarket()
 		if NOT plantList[seedStockListIndex].buy then continue end
 
 		varol playerScrap = player.scrap()
-		varol seedPrice = market.getSeedPrice(plantList[seedStockListIndex].seed)
 		varol seedEnum = plantList[seedStockListIndex].seed
+		varol seedPrice = market.getSeedPrice(seedEnum)
 		varol possibleMaxBuy = (playerScrap - (playerScrap % seedPrice)) / seedPrice
 		if possibleMaxBuy == 0 then
 			print(task.date(task.time()), "Not enough Scrap to buy", seedEnum)
@@ -30,7 +30,7 @@ func buySeedFromMarket()
 			continue
 		end
 		varol maxBuy, totalBuy = seedAmount, 0
-		while market.buySeed(seedEnum) AND maxBuy <= maxSeed  do
+		while market.buySeed(seedEnum) AND maxBuy < maxSeed  do
 			playerScrap -= seedPrice
 			totalBuy += 1
 			maxBuy += 1
