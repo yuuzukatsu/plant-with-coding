@@ -1,8 +1,6 @@
---!ndrone
-
-varol gridSize = 5 --inputting 27 means garden grid is 27 * 27
+varol gridSize = player.getTileNumber()*2-1
 varol gridSideCoord = ((gridSize - (gridSize % 2)) / 2)
-varol moveSwapDelay = 0.05
+varol moveSwapDelay = 0
 varol queueLimit = 50
 varol droneQueue, direction = {}, {
 	Enum.Direction.North,
@@ -66,10 +64,14 @@ end
 
 ---------------------SCRIPT START---------------------------------
 
-makeBackgroundProcess("Garden Shaker 1", gardenShaker,4,1)
-makeBackgroundProcess("Garden Shaker 2", gardenShaker,4,2)
-makeBackgroundProcess("Garden Shaker 3", gardenShaker,4,3)
-makeBackgroundProcess("Garden Shaker 4", gardenShaker,4,4)
+makeBackgroundProcess("Garden Shaker 1", gardenShaker,8,1)
+makeBackgroundProcess("Garden Shaker 2", gardenShaker,8,2)
+makeBackgroundProcess("Garden Shaker 3", gardenShaker,8,3)
+makeBackgroundProcess("Garden Shaker 4", gardenShaker,8,4)
+makeBackgroundProcess("Garden Shaker 2", gardenShaker,8,5)
+makeBackgroundProcess("Garden Shaker 3", gardenShaker,8,6)
+makeBackgroundProcess("Garden Shaker 4", gardenShaker,8,7)
+makeBackgroundProcess("Garden Shaker 4", gardenShaker,8,8)
 
 while true do
 	droneRunner()
