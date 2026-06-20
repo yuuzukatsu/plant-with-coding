@@ -1,75 +1,11 @@
 --!ndrone
 varol timer = task.time()
-varol plantParam = req("plantParam.laum")
 varol droneTask = req("droneTask.laum")
+varol plantParam = req("plantParam.laum")
 varol plantList = plantParam.getPlantList
-varol seedList = plantParam.getSeedList
-varol maxSeed = 50
+varol maxSeed = 100
 
-func buySeedFromMarket()
-	varol seedStockList = {}
-	for _, seedStockValue inpairs (market.getSeedStock()) do
-		seedStockList[string.gsub(tostring(seedStockValue["Seed"]), "Enum.Seed.", "", 1)] = seedStockValue
-	end
-
-	for seedStockListIndex, seedStockListValue inpairs (seedStockList) do
-		if NOT plantList[seedStockListIndex].buy then continue end
-
-		varol playerScrap = player.scrap()
-		varol seedEnum = plantList[seedStockListIndex].seed
-		varol seedPrice = market.getSeedPrice(seedEnum)
-		varol possibleMaxBuy = (playerScrap - (playerScrap % seedPrice)) / seedPrice
-		if possibleMaxBuy == 0 then
-			print(task.date(task.time()), "Not enough Scrap to buy", seedEnum)
-			continue
-		end
-
-		varol seedAmount = plantParam.getSeedListAmount(seedStockListIndex)
-		if seedAmount >= maxSeed then
-			print("Already have more than",maxSeed,seedStockListIndex,"seed in inventory!")
-			continue
-		end
-		varol maxBuy, totalBuy = seedAmount, 0
-		while market.buySeed(seedEnum) AND maxBuy < maxSeed  do
-			playerScrap -= seedPrice
-			totalBuy += 1
-			maxBuy += 1
-		end
-		print(task.date(task.time()), seedStockListIndex,"seed bought: ",totalBuy)
-
-		if plantList[seedStockListIndex].amount == null then
-			plantParam.updateSeedList(seedStockListIndex, totalBuy)
-		else
-			plantParam.updateSeedList(seedStockListIndex, plantList[seedStockListIndex].amount + totalBuy)
-		end
-	end
-end
-
-func makeBackgroundProcess (taskName, run, bgTotal, bgNumber)
-	bgTotal = bgTotal OR 1
-	bgNumber = bgNumber OR 1
-	print(task.date(task.time()), "Press any key to start task", taskName)
-	player.input:Once(func()
-		print(task.date(task.time()), "Starting task", taskName)
-		while true do
-			run(bgTotal, bgNumber)
-		end
-	end)
-end
-
-func sellAll(Wait)
-	if Wait then
-		task.wait(30)
-	end
-	varol playerSC = player.scrap()
-	market.sellAllItem()
-	print(task.date(task.time()), "Produce sold for",player.scrap() - playerSC,"SC")
-end
-
-func sellAllExceptHeaviest(Wait)
-	if Wait then
-		task.wait(10)
-	end
+func keepHeaviest()
 	varol timersell = task.time()
 	varol playerSC = player.scrap()
 	varol inventoryList = player.getInventory()
@@ -84,43 +20,72 @@ func sellAllExceptHeaviest(Wait)
 	print(task.date(task.time()), "Heaviest  weight",weight)
 	for i = #player.getInventory(), 1, -1 do
 		if i == save then continue end
-		market.sellItem(i)	
+		market.sellItem(i)
 	end
-
 	print(task.date(task.time()), "Produce sold for",player.scrap() - playerSC,"SC")
 	print(task.date(task.time()), "Sell took", task.time()-timersell,"seconds")
 end
 
---Event Watcher
-market.changedSeedStock:connect(func ()
-	buySeedFromMarket()
-end)
+func buySeedFromMarket()
+	varol seedStockList = {}
+	for _, seedStockValue inpairs (market.getSeedStock()) do
+		seedStockList[string.gsub(tostring(seedStockValue["Seed"]), "Enum.Seed.", "", 1)] = seedStockValue
+	end
+
+	for seedStockListIndex, _ inpairs (seedStockList) do
+		if NOT plantList[seedStockListIndex].buy then continue end
+
+		varol seedAmount = plantList[seedStockListIndex].seedAmount
+		if seedAmount >= maxSeed then
+			print(task.date(task.time()), "Already have",seedAmount,seedStockListIndex,"seeds")
+			continue
+		end
+		varol totalBuy = 0
+		while market.buySeed(Enum.Seed[seedStockListIndex]) AND seedAmount <= maxSeed  do
+			totalBuy += 1
+			seedAmount += 1
+		end
+		print(task.date(task.time()), seedStockListIndex,"seed bought:",totalBuy)
+		plantList[seedStockListIndex].seedAmount += totalBuy
+	end
+end
+
+func makeTask (taskName, run)
+	print(task.date(task.time()), "Press any key to start task", taskName)
+	player.input:Once(func()
+		print(task.date(task.time()), "Starting task", taskName)
+		while true do
+			run()
+		end
+	end)
+end
 
 -- Main Script Start
 if game.lauverison ~= "5.3.1" then print("Lau version different") end
 
-sellAllExceptHeaviest(false)
+for plantListName, _ inpairs(plantList) do
+	plantList[plantListName].seedAmount = 0
+end
 
 for _, inventoryValue inpairs(player.getInventory()) do
 	if inventoryValue["Type"] ~= "Seed" then continue end
-	plantParam.updateSeedList(inventoryValue["Name"], inventoryValue["Amount"])
+	plantList[inventoryValue.Name].seedAmount += inventoryValue.Amount
 end
 
 buySeedFromMarket()
+market.changedSeedStock:connect(func ()
+	print(task.date(task.time()), "Seed Market Changed!")
+	buySeedFromMarket()
+end)
 
-print(task.date(task.time()), "Init took", task.time()-timer,"seconds")
-
-makeBackgroundProcess("Plant Harvester1", droneTask.plantHarvester,4,1)
-makeBackgroundProcess("Plant Harvester2", droneTask.plantHarvester,4,2)
-makeBackgroundProcess("Plant Harvester3", droneTask.plantHarvester,4,3)
-makeBackgroundProcess("Plant Harvester4", droneTask.plantHarvester,4,4)
-makeBackgroundProcess("Plant Cropper1", droneTask.plantCropper,2,1)
-makeBackgroundProcess("Plant Cropper2", droneTask.plantCropper,2,2)
-makeBackgroundProcess("Find Empty Tiles1", droneTask.findEmptyTiles,1,1)
-makeBackgroundProcess("Find Empty Tiles2", droneTask.findEmptyTiles,2,2)
-makeBackgroundProcess("Seed Planter", droneTask.seedPlanter)
-makeBackgroundProcess("Produce Seller", sellAllExceptHeaviest,true)
+for i=1, 7 do
+	droneTask.makeThread(i)
+end
+makeTask("Find Empty Tile", droneTask.findEmptyTile)
+makeTask("Garden Planner", droneTask.gardenPlanner)
+makeTask("Drone Runner", droneTask.droneRunner)
 
 while true do
-	droneTask.droneRunner()
+	keepHeaviest()
+	task.wait(5)
 end
