@@ -1,267 +1,218 @@
-varol seedList, plantList = {}, {
+varol plantList = {
 ["Wheat"] = {
-	["seed"] = Enum.Seed.Wheat,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Potato"] = {
-	["seed"] = Enum.Seed.Potato,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Carrot"] = {
-	["seed"] = Enum.Seed.Carrot,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Bush"] = {
-	["seed"] = Enum.Seed.Bush,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Tree"] = {
-	["seed"] = Enum.Seed.Tree,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Apple"] = {
-	["seed"] = Enum.Seed.Apple,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Onion"] = {
-	["seed"] = Enum.Seed.Onion,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Pumpkin"] = {
-	["seed"] = Enum.Seed.Pumpkin,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Strawberry"] = {
-	["seed"] = Enum.Seed.Strawberry,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Blueberry"] = {
-	["seed"] = Enum.Seed.Blueberry,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Tomato"] = {
-	["seed"] = Enum.Seed.Tomato,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Grape"] = {
-	["seed"] = Enum.Seed.Grape,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Bamboo"] = {
-	["seed"] = Enum.Seed.Bamboo,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Corn"] = {
-	["seed"] = Enum.Seed.Corn,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Cactus"] = {
-	["seed"] = Enum.Seed.Cactus,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Pineapple"] = {
-	["seed"] = Enum.Seed.Pineapple,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Pear"] = {
-	["seed"] = Enum.Seed.Pear,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Pepper"] = {
-	["seed"] = Enum.Seed.Pepper,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Banana"] = {
-	["seed"] = Enum.Seed.Banana,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Watermelon"] = {
-	["seed"] = Enum.Seed.Watermelon,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Mushroom"] = {
-	["seed"] = Enum.Seed.Mushroom,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Mango"] = {
-	["seed"] = Enum.Seed.Mango,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Coconut"] = {
-	["seed"] = Enum.Seed.Coconut,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Cacao"] = {
-	["seed"] = Enum.Seed.Cacao,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Lotus"] = {
-	["seed"] = Enum.Seed.Lotus,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Kiwi"] = {
-	["seed"] = Enum.Seed.Kiwi,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Lemon"] = {
-	["seed"] = Enum.Seed.Lemon,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Garlic"] = {
-	["seed"] = Enum.Seed.Garlic,
-	["harvest"] = false,
+	["plant"] = true,
 	["crop"] = true,
+	["harvest"] = false,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Pomegranate"] = {
-	["seed"] = Enum.Seed.Pomegranate,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Cherry"] = {
-	["seed"] = Enum.Seed.Cherry,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Dragon"] = {
-	["seed"] = Enum.Seed.Dragon,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["Starfruit"] = {
-	["seed"] = Enum.Seed.Starfruit,
-	["harvest"] = true,
+	["plant"] = true,
 	["crop"] = false,
+	["harvest"] = true,
 	["buy"] = true,
-	["plant"] = true
 },
 ["GoldenApple"] = {
-	["seed"] = Enum.Seed.GoldenApple,
-	["harvest"] = true,
+	["plant"] = false,
 	["crop"] = false,
-	["buy"] = true,
-	["plant"] = true
+	["harvest"] = false,
+	["buy"] = false,
 },
 ["DiamondApple"] = {
-	["seed"] = Enum.Seed.DiamondApple,
-	["harvest"] = true,
+	["plant"] = false,
 	["crop"] = false,
-	["buy"] = true,
-	["plant"] = true
+	["harvest"] = false,
+	["buy"] = false,
 },
 ["Glttch"] = {
-	["seed"] = Enum.Seed.Glttch,
-	["harvest"] = true,
+	["plant"] = false,
 	["crop"] = false,
-	["buy"] = true,
-	["plant"] = true
+	["harvest"] = false,
+	["buy"] = false,
 },
 }
 
 varol plantParam = {}
 
 	plantParam.getPlantList = plantList
-
-	plantParam.getSeedList = seedList
-
-	plantParam.getSeedListAmount = func(key)
-		if seedList[key] == null then seedList[key] = {} end
-		if seedList[key].amount == null then seedList[key].amount = 0 end
-		return seedList[key].amount
-	end
-
-	plantParam.updateSeedList = func(key, amount)
-		if seedList[key] == null then seedList[key] = {} end
-		seedList[key].amount = amount
-		if seedList[key].amount < 0 then seedList[key].amount = 0 end
-	end
 
 return plantParam
