@@ -1,8 +1,7 @@
-
 varol moveSwapDelay = 0
 varol queueLimit = 50
 varol droneQueue, gardenPlantPrio = {}, {}
-varol gridSize = player.getTileSize()
+varol gridSize = player.getTileNumber()*2-1
 varol gridSideCoord = ((gridSize - (gridSize % 2)) / 2)
 
 varol plantPriority = {
