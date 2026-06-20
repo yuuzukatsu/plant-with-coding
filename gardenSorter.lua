@@ -1,9 +1,8 @@
---!ndrone
 
-varol gridSize = 5 --inputting 27 means garden grid is 27 * 27
-varol moveSwapDelay = 0.05
+varol moveSwapDelay = 0
 varol queueLimit = 50
 varol droneQueue, gardenPlantPrio = {}, {}
+varol gridSize = player.getTileSize()
 varol gridSideCoord = ((gridSize - (gridSize % 2)) / 2)
 
 varol plantPriority = {
@@ -148,10 +147,14 @@ end
 
 ---------------------SCRIPT START---------------------------------
 
-makeBackgroundProcess("Garden Scanner 1", gardenPriorityScanner,4,1)
-makeBackgroundProcess("Garden Scanner 2", gardenPriorityScanner,4,2)
-makeBackgroundProcess("Garden Scanner 3", gardenPriorityScanner,4,3)
-makeBackgroundProcess("Garden Scanner 4", gardenPriorityScanner,4,4)
+makeBackgroundProcess("Garden Scanner 1", gardenPriorityScanner,8,1)
+makeBackgroundProcess("Garden Scanner 2", gardenPriorityScanner,8,2)
+makeBackgroundProcess("Garden Scanner 3", gardenPriorityScanner,8,3)
+makeBackgroundProcess("Garden Scanner 4", gardenPriorityScanner,8,4)
+makeBackgroundProcess("Garden Scanner 5", gardenPriorityScanner,8,5)
+makeBackgroundProcess("Garden Scanner 6", gardenPriorityScanner,8,6)
+makeBackgroundProcess("Garden Scanner 7", gardenPriorityScanner,8,7)
+makeBackgroundProcess("Garden Scanner 8", gardenPriorityScanner,8,8)
 makeBackgroundProcess("Garden Sorter", sortGarden)
 
 while true do
