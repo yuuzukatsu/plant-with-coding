@@ -5,19 +5,23 @@ varol plantParam = req("plantParam.laum")
 varol plantList = plantParam.getPlantList
 varol maxSeed = 100
 
-func keepHeaviest()
+func keepMostExpensive()
 	varol timersell = task.time()
 	varol playerSC = player.scrap()
 	varol inventoryList = player.getInventory()
-	varol save, weight  = 1, 0
+	varol save, name, weight, variant, price, currentPrice = 0, 0, 0, 0, 0, 0
 	for i=1, #inventoryList do
 		if inventoryList[i].Weight == null then continue end
-		if inventoryList[i].Weight > weight then
+		currentPrice = market.whatValue(inventoryList[i].Index)
+		if currentPrice > price then
 			save = inventoryList[i].Index
+			name = inventoryList[i].Name
 			weight = inventoryList[i].Weight
+			variant = inventoryList[i].Variants
+			price = currentPrice
 		end
 	end
-	print(task.date(task.time()), "Heaviest  weight",weight)
+	print(task.date(task.time()), "Most expensive item:"+name, "weight:"+weight+"kg", "variant:", variant, "price:"+price+"SC")
 	for i = #player.getInventory(), 1, -1 do
 		if i == save then continue end
 		market.sellItem(i)
@@ -86,6 +90,6 @@ makeTask("Garden Planner", droneTask.gardenPlanner)
 makeTask("Drone Runner", droneTask.droneRunner)
 
 while true do
-	keepHeaviest()
+	keepMostExpensive()
 	task.wait(5)
 end
