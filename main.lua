@@ -69,6 +69,7 @@ if game.lauverison ~= "5.3.1" then print("Lau version different") end
 
 for plantListName, _ inpairs(plantList) do
 	plantList[plantListName].seedAmount = 0
+	plantList[plantListName].nextCheck = 0
 end
 
 for _, inventoryValue inpairs(player.getInventory()) do
@@ -89,7 +90,9 @@ makeTask("Find Empty Tile", droneTask.findEmptyTile)
 makeTask("Garden Planner", droneTask.gardenPlanner)
 makeTask("Drone Runner", droneTask.droneRunner)
 
+print(task.date(task.time()), "Init took:", task.time()-timer, "seconds")
+
 while true do
 	keepMostExpensive()
-	task.wait(5)
+	task.wait(10)
 end
