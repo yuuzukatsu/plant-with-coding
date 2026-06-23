@@ -48,13 +48,13 @@ drnTsk.gardenPlanner = func()
 		if plantListValue.nextCheck > task.time() then continue end
 		varol plantCount = #garden.getPlantEnum(Enum.Seed[plantListKey])
 		if plantListValue.plant AND #emptyTile > 0 AND plantListValue.seedAmount > 0 then
-			plantList[plantListKey].nextCheck = task.time() + plantListValue.growTime + plantListValue.fruitTime
 			drnTsk.threadAllocator(drnTsk.seedPlanter, plantListKey, "Plant")
+			plantList[plantListKey].nextCheck = task.time() + plantListValue.growTime + plantListValue.fruitTime
 		elseif plantListValue.crop AND plantCount > 0 then
 			drnTsk.threadAllocator(drnTsk.plantCropper, plantListKey, "Crop")
 		elseif plantListValue.harvest AND plantCount > 0 then
-			plantList[plantListKey].nextCheck = task.time() + plantListValue.fruitTime
 			drnTsk.threadAllocator(drnTsk.plantHarvester, plantListKey, "Harvest")
+			plantList[plantListKey].nextCheck = task.time() + plantListValue.fruitTime
 		elseif plantCount > 0 then
 			print(getTime(), "Ignore",plantCount,plantListKey)
 		end
