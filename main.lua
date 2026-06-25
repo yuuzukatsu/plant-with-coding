@@ -15,6 +15,7 @@ func keepMostExpensive()
 	for i=1, #inventoryList do
 		if inventoryList[i].Weight == null then continue end
 		currentPrice = market.whatValue(inventoryList[i].Index)
+		totalSell += currentPrice
 		if currentPrice > price then
 			save = inventoryList[i].Index
 			name = inventoryList[i].Name
@@ -24,9 +25,9 @@ func keepMostExpensive()
 		end
 	end
 	print(time(), "Most expensive item:"+name, "weight:"+weight+"kg", "variant:", variant, "price:"+price+"SC")
-	for i = #player.getInventory(), 1, -1 do
+	totalSell -= price
+	for i = #inventoryList, 1, -1 do
 		if i == save then continue end
-		totalSell += market.whatValue(i)
 		market.sellItem(i)
 	end
 	totalSell = string.gsub(string.reverse(string.gsub(string.reverse(tostring(totalSell)), "%d%d%d", "%1,")), "^,", "")
@@ -66,27 +67,31 @@ end
 -- Main Script Start
 if game.lauverison ~= "5.4.1" then print("Lau version different") end
 
-print("Setting seedAmount and nextCheck properties")
+print(time(), "Setting seedAmount and nextCheck properties")
 for plantListName, _ inpairs(plantList) do
 	plantList[plantListName].seedAmount = 0
 	plantList[plantListName].nextCheck = 0
 end
 
-print("Listing inventory for seeds")
+print(time(), "Keeping most expensive produce")
+keepMostExpensive()
+
+print(time(), "Listing inventory for seeds")
 for _, inventoryValue inpairs(player.getInventory()) do
 	if inventoryValue["Type"] ~= "Seed" then continue end
 	plantList[inventoryValue.Name].seedAmount += inventoryValue.Amount
 end
 
-print("Buying seeds from market")
+print(time(), "Buying seeds from market")
 buySeedFromMarket()
-print("Activating market watcher")
+
+print(time(), "Activating market watcher")
 market.changedSeedStock:connect(func ()
 	print(time(), "Seed Market Changed!")
 	buySeedFromMarket()
 end)
 
-print("Starting threads and tasks")
+print(time(), "Starting threads and tasks")
 for i=1, 7 do
 	droneTask.makeThread(i)
 end
@@ -98,5 +103,4 @@ print(time(), "Init took:", task.time()-timer, "seconds")
 
 while true do
 	keepMostExpensive()
-	task.wait(10)
 end
