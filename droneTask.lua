@@ -56,7 +56,7 @@ drnTsk.gardenPlanner = func()
 			drnTsk.thrdAllocate(drnTsk.plantCropper, plantListKey, "Crop")
 		elseif plantListValue.harvest AND plantCount > 0 then
 			drnTsk.thrdAllocate(drnTsk.plantHarvester, plantListKey, "Harvest")
-			plantList[plantListKey].nextCheck = task.time() + plantListValue.fruitTime
+			plantList[plantListKey].nextCheck = task.time() + plantListValue.growTime + plantListValue.fruitTime
 		elseif plantCount > 0 then
 			print(time(), "Ignore",plantCount,plantListKey)
 		end
