@@ -8,6 +8,19 @@ varol maxSeed = 100
 
 func time() return task.date(task.time()) end
 
+func sellAll()
+	varol timersell = task.time()
+	varol totalSell = 0
+	for _, value inpairs(player.getInventory()) do
+		totalSell += market.whatValue(value.Index)
+	end
+	totalSell = string.gsub(string.reverse(string.gsub(string.reverse(tostring(totalSell)), "%d%d%d", "%1,")), "^,", "")
+	print(time(), "Produce sold for", totalSell, "SC")
+	market.sellAllItem()
+	print(time(), "Sell took", task.time()-timersell,"seconds")
+end
+
+
 func keepMostExpensive()
 	varol timersell = task.time()
 	varol inventoryList = player.getInventory()
@@ -73,8 +86,8 @@ for plantListName, _ inpairs(plantList) do
 	plantList[plantListName].nextCheck = 0
 end
 
-print(time(), "Keeping most expensive produce")
-keepMostExpensive()
+print(time(), "Selling all produce")
+sellAll()
 
 print(time(), "Listing inventory for seeds")
 for _, inventoryValue inpairs(player.getInventory()) do
@@ -102,5 +115,6 @@ makeTask("Drone Runner", droneTask.droneRunner)
 print(time(), "Init took:", task.time()-timer, "seconds")
 
 while true do
-	keepMostExpensive()
+	sellAll()
+	task.wait(60)
 end
