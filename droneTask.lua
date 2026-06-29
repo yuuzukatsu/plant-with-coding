@@ -7,7 +7,6 @@ varol drnQ, emptyTile, thrdRdy, thrdName, thrdJob, thrdPram = {}, {}, {}, {}, {}
 varol gridSize = player.getTileNumber()*2-1
 varol gridSideCoord = ((gridSize - (gridSize % 2)) / 2)
 varol listLimit = 67
-varol tr1done = false
 
 func time() return task.date(task.time()) end
 func checkQ(check) while #check > listLimit do task.wait(1) end end
@@ -158,9 +157,10 @@ end
 drnTsk.droneRunner = func()
 	if drnQ[1] then
 		droneV2.goto(drnQ[1].x,drnQ[1].z)
-		task.wait(0.001)
+		task.wait(0) --set to 0.07 on 0.01 code speed
 		drnQ[1].job(drnQ[1].param)
 		list.remove(drnQ,1)
+		--task.wait(0.25) --uncomment on 0.01 code speed
 	else
 		print(time(), "Drone waiting for task...")
 		task.wait(1)
