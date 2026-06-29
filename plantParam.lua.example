@@ -4,210 +4,280 @@ varol plantList = {
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 5,
+	["fruitTime"] = 0
 },
 ["Potato"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 10,
+	["fruitTime"] = 0
 },
 ["Carrot"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 18,
+	["fruitTime"] = 0
 },
 ["Bush"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 25,
+	["fruitTime"] = 0
 },
 ["Tree"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 35,
+	["fruitTime"] = 0
 },
 ["Apple"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 10,
+	["fruitTime"] = 20
 },
 ["Onion"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 40,
+	["fruitTime"] = 0
 },
 ["Pumpkin"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 50,
+	["fruitTime"] = 0
 },
 ["Strawberry"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 10,
+	["fruitTime"] = 10
 },
 ["Blueberry"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 10,
+	["fruitTime"] = 10
 },
 ["Tomato"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 11,
+	["fruitTime"] = 11
 },
 ["Grape"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 25,
+	["fruitTime"] = 25
 },
 ["Bamboo"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 70,
+	["fruitTime"] = 0
 },
 ["Corn"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 24,
+	["fruitTime"] = 11
 },
 ["Cactus"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 30,
+	["fruitTime"] = 30
 },
 ["Pineapple"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 35,
+	["fruitTime"] = 35
 },
 ["Pear"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 40,
+	["fruitTime"] = 45
 },
 ["Pepper"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 40,
+	["fruitTime"] = 40
 },
 ["Banana"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 50,
+	["fruitTime"] = 50
 },
 ["Watermelon"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 90,
+	["fruitTime"] = 0
 },
 ["Mushroom"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 160,
+	["fruitTime"] = 0
 },
 ["Mango"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 240,
+	["fruitTime"] = 15
 },
 ["Coconut"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 100,
+	["fruitTime"] = 60
 },
 ["Cacao"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 120,
+	["fruitTime"] = 70
 },
 ["Lotus"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 150,
+	["fruitTime"] = 80
 },
 ["Kiwi"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 220,
+	["fruitTime"] = 90
 },
 ["Lemon"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 220,
+	["fruitTime"] = 120
 },
 ["Garlic"] = {
 	["plant"] = true,
 	["crop"] = true,
 	["harvest"] = false,
 	["buy"] = true,
+	["growTime"] = 700,
+	["fruitTime"] = 0
 },
 ["Pomegranate"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 300,
+	["fruitTime"] = 180
 },
 ["Cherry"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 700,
+	["fruitTime"] = 230
 },
 ["Dragon"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 800,
+	["fruitTime"] = 250
 },
 ["Starfruit"] = {
 	["plant"] = true,
 	["crop"] = false,
 	["harvest"] = true,
 	["buy"] = true,
+	["growTime"] = 1050,
+	["fruitTime"] = 350
 },
 ["GoldenApple"] = {
 	["plant"] = false,
 	["crop"] = false,
 	["harvest"] = false,
 	["buy"] = false,
+	["growTime"] = 0,
+	["fruitTime"] = 0
 },
 ["DiamondApple"] = {
 	["plant"] = false,
 	["crop"] = false,
 	["harvest"] = false,
 	["buy"] = false,
+	["growTime"] = 0,
+	["fruitTime"] = 0
 },
 ["Glttch"] = {
 	["plant"] = false,
 	["crop"] = false,
 	["harvest"] = false,
 	["buy"] = false,
+	["growTime"] = 0,
+	["fruitTime"] = 0
 },
 }
 
