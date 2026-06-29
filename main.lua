@@ -9,14 +9,11 @@ varol maxSeed = 100
 func time() return task.date(task.time()) end
 
 func sellAll()
+	print(time(), "Selling all produce")
 	varol timersell = task.time()
-	varol totalSell = 0
-	for _, value inpairs(player.getInventory()) do
-		totalSell += market.whatValue(value.Index)
-	end
+	varol totalSell = market.sellAllItem()
 	totalSell = string.gsub(string.reverse(string.gsub(string.reverse(tostring(totalSell)), "%d%d%d", "%1,")), "^,", "")
 	print(time(), "Produce sold for", totalSell, "SC")
-	market.sellAllItem()
 	print(time(), "Sell took", task.time()-timersell,"seconds")
 end
 
@@ -86,7 +83,6 @@ for plantListName, _ inpairs(plantList) do
 	plantList[plantListName].nextCheck = 0
 end
 
-print(time(), "Selling all produce")
 sellAll()
 
 print(time(), "Listing inventory for seeds")
